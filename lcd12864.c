@@ -3,28 +3,7 @@
 	编译：gcc 12864.c -o 12864 -L lib -l wiringPi (需已安装wiringPi)
 	by：WuSiYu
 */
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdint.h>
-#include <wiringPi.h>
-#include <iconv.h> 
-
-#include <Python.h>
- 
-#define LCD_RS 6 //显示屏控制线
-#define LCD_RW 5
-#define LCD_EN 2
- 
-#define D1 30 //显示屏数据线
-#define D2 21
-#define D3 22
-#define D4 23
-#define D5 24
-#define D6 25
-#define D7 26
-#define D8 0
- 
-char u2g_out[255]; 
+#include <lcd12864.h>
  
 /*===================================================================
 功能：编码转换
@@ -189,29 +168,7 @@ void Init_LCD12864(void){			//初始化LCD屏
 }
  
 
-
-static PyObject * wrap_Init_LCD12864(PyObject *self,PyObject *args)
-{
-    Init_LCD12864();
-    WriteCmd_LCD12864(0x01);
-	WriteWord_LCD12864(0x80,"Hello LCD12864");
-    return NULL;
-}
-
-
-static PyMethodDef lcd12864Methods[]=
-{
-    {"Init_LCD12864",wrap_Init_LCD12864,METH_VARARGS,"init lcd12864"},
-    {NULL,NULL}
-};
-
-void initlcd12864()
-{
-	PyObject* m;
-	m = Py_InitModule("lcd12864", lcd12864Methods);
-}
-
-
+/*
 int main (int args, char *argv[]){
 
 	Init_LCD12864();
@@ -224,4 +181,4 @@ int main (int args, char *argv[]){
 		WriteWord_LCD12864_2(argv[1]);
 	}
 }
-
+*/
