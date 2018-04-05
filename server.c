@@ -70,7 +70,7 @@ int main(int argc, char *argv[])
     struct linger li;
     li.l_onoff = 1;
     li.l_linger = 1;
-    setsockopt(serv_sock, SOL_SOCKET,SO_LINGER, (chaer *)&li, sizeof(li));
+    setsockopt(serv_sock, SOL_SOCKET,SO_LINGER, (char *)&li, sizeof(li));
 
     if (bind(serv_sock, (struct sockaddr*)&serv_addr, sizeof(serv_addr)) < 0) {
         printf("bind to port error\n");
@@ -83,7 +83,7 @@ int main(int argc, char *argv[])
     }
 
 
-    int flags = fcntl(servfd, F_GETFL, 0);
+    int flags = fcntl(serv_sock, F_GETFL, 0);
     fcntl(serv_sock, F_SETFL, flags | 0_NONBLOCK);
 
     const char * ClientRecv = "ok!";
@@ -115,9 +115,10 @@ int main(int argc, char *argv[])
                ntohs(clnt_addr.sin_port));
 
         while (1) {
-	   
+	        ssize_t size;
     	    AD7606_FetchValue();
-    	    ssize_t size = write(clnt_sock, ADC_Bytes, sizeof(ADC_Bytes));
+    	    
+            size = write(clnt_sock, ADC_Bytes, sizeof(ADC_Bytes));
 	        if (size < 0) {
                 printf("send() error\n");
                 break;
@@ -130,7 +131,7 @@ int main(int argc, char *argv[])
             
 
             memset(buf, 0, sizeof(buf));
-            ssize_t size = read(clnt_sock, buf, sizeof(buf));
+            size = read(clnt_sock, buf, sizeof(buf));
             if (size < 0) {
                 printf("read() error\n");
                 break;
