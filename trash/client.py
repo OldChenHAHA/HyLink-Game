@@ -9,7 +9,7 @@ port = 8888                # 设置端口好
 
 s.connect(("10.1.1.111", port))
 
-data = s.recv(1024)
+data = s.recv(16)
 for i in data:
     print i
 
