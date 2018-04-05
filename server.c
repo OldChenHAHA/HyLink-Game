@@ -27,9 +27,12 @@
 void InitPeripherals(){
     wiringPiSetup();
     AD7606_Init();
-    //Init_LCD12864();
-    //Clear_LCDScreen();
-    //WriteWord_LCD12864(0x80,"Hello LCD12864 Welcome to RaspberryPi");
+    printf("AD7606 init done!\n");
+    /*
+    Init_LCD12864();
+    Clear_LCDScreen();
+    WriteWord_LCD12864(0x80,"Hello LCD12864 Welcome to RaspberryPi");
+    */
     printf("Peripherals init done!\n");
 }
 
@@ -92,7 +95,7 @@ int main(int argc, char *argv[])
 
         while (1) {
 	   
-	    //printf("fetch data\n");	
+	    printf("fetch data\n");	
     	    AD7606_FetchValue();
     	    write(clnt_sock, ADC_Bytes, sizeof(ADC_Bytes));
 	
@@ -104,7 +107,7 @@ int main(int argc, char *argv[])
             } else {
                 buf[size] = '\0';
             }
-	    //printf("%s\n",buf);
+	    printf("Receive msg from client: %s\n",buf);
 
             if ( strcmp(buf, ClientRecv) != 0)
             {
