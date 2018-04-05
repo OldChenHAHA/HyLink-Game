@@ -10,6 +10,7 @@
 #include "bsp_AD7606.h"
 
 uint8_t ADC_Bytes[CH_NUM*2];
+float ADC_Values[CH_NUM];
 
 void spiSetup(){
     if((wiringPiSPISetupMode(SPI_CHANNEL_0, SPI_CLK, SPI_MODE_2)) < 0){
@@ -77,17 +78,12 @@ void AD7606_CheckBusy(){
 //Software Poll
 void AD7606_FetchValue(){
 
-	float ADC_Values[CH_NUM];
-	//uint8_t ADC_Bytes[CH_NUM * 2];
 	int i = 0;
 	uint16_t temp;
-
-	while(1){
 
 	AD7606_CheckBusy();
 	AD7606_StartConv();
 	AD7606_CheckBusy();
-	printf("fuck\n");
 
 	digitalWrite(CS, LOW);
 	if (wiringPiSPIDataRW (SPI_CHANNEL_0, ADC_Bytes, CH_NUM * 2) == -1){
@@ -102,11 +98,6 @@ void AD7606_FetchValue(){
 		if(ADC_Values[i] >= 5){
 			ADC_Values[i] = - (10 - ADC_Values[i]);
 		}
-		printf("| %f |\n", ADC_Values[i]);
 	}
 
-	delay(1);
-	}
-
-	//return ADC_Values;
 }

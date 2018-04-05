@@ -29,12 +29,18 @@ int main(int argc, char const *argv[])
 
 	while (1) {
 		
+		AD7606_FetchValue();
+
 #ifdef ADC_VALUE_DISP
-		printf("fetching data\n");
+		//printf("fetching data\n");
+		for (int i=0; i<CH_NUM; ++i){
+			printf("| %f |", ADC_Values[i]);
+		}
+		printf("\n");
+
 #endif
 
-		AD7606_FetchValue();
-		delay(1);
+		delay(1000);
 
 	}
 

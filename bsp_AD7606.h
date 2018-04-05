@@ -32,6 +32,7 @@
 #define SPI_CLK 5000000
 
 extern uint8_t ADC_Bytes[CH_NUM*2];
+extern float ADC_Values[CH_NUM];
 
 void spiSetup();
 void AD7606_Init();
