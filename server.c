@@ -118,6 +118,9 @@ int main(int argc, char *argv[])
 	        ssize_t size;
     	    AD7606_FetchValue();
     	    
+            #ifdef DEBUG_INFO
+            printf("send data begin\n");
+            #endif
             size = write(clnt_sock, ADC_Bytes, sizeof(ADC_Bytes));
 	        if (size < 0) {
                 printf("send() error\n");
