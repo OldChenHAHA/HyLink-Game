@@ -1,11 +1,11 @@
 #ifndef __BSP_LCD12864_H__
 #define __BSP_LCD12864_H__
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdint.h>
-#include <wiringPi.h>
-#include <iconv.h>
+#include "stdio.h"
+#include "stdlib.h"
+#include "stdint.h"
+#include "wiringPi.h"
+#include "iconv.h"
 
 #define LCD_RS 6 //显示屏控制线
 #define LCD_RW 5

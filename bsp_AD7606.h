@@ -39,6 +39,6 @@ void AD7606_Reset();
 void AD7606_IOSet();
 void AD7606_StartConv();
 void AD7606_CheckBusy();
-float * AD7606_FetchValue();
+void AD7606_FetchValue();
 
 #endif

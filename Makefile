@@ -6,9 +6,9 @@ INCLUDE = .
 #CFLAGS = -O -Wall
 CFLAGS = -g -Wall
 #Object文件
-OBJ    = test_AD7606.o bsp_AD7606.o bsp_LCD12864.o
+OBJ    = main.o bsp_AD7606.o bsp_LCD12864.o
 #-include <filename>
-all:$(OBJ)
+RaspberryApp:$(OBJ)
 	@echo Linking......
 	@$(CC) -Wall -o RaspberryApp $(OBJ) -lwiringPi
 	@echo Complete!!!

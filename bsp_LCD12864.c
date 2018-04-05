@@ -3,7 +3,7 @@
 	编译：gcc 12864.c -o 12864 -L lib -l wiringPi (需已安装wiringPi)
 	by：WuSiYu
 */
-#include <bsp_LCD12864.h>
+#include "bsp_LCD12864.h"
 
 char u2g_out[255];
 

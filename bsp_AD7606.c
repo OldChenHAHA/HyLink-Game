@@ -56,7 +56,8 @@ void AD7606_IOSet(){
 	pullUpDnControl(BUSY, PUD_UP);
 	digitalWrite(RST, LOW);
 	digitalWrite(CS , HIGH);
-	digitalWrite(CVAB , HIGH);
+	digitalWrite(CVA , HIGH);
+	digitalWrite(CVB , HIGH);
 }
 
 void AD7606_StartConv(){
@@ -73,7 +74,7 @@ void AD7606_CheckBusy(){
 }
 
 //Software Poll
-float * AD7606_FetchValue(){
+void AD7606_FetchValue(){
 
 	float ADC_Values[CH_NUM];
 	uint8_t ADC_Bytes[CH_NUM * 2];
@@ -97,7 +98,8 @@ float * AD7606_FetchValue(){
 		if(ADC_Values[i] >= 5){
 			ADC_Values[i] = - (10 - ADC_Values[i]);
 		}
+		printf("| %f |\n", ADC_Values[i]);
 	}
 
-	return ADC_Values;
+	//return ADC_Values;
 }
