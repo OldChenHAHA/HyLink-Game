@@ -3,8 +3,11 @@
 	编译：gcc 12864.c -o 12864 -L lib -l wiringPi (需已安装wiringPi)
 	by：WuSiYu
 */
-#include <lcd12864.h>
- 
+#include <bsp_LCD12864.h>
+
+char u2g_out[255];
+
+
 /*===================================================================
 功能：编码转换
 输入：UTF8
@@ -15,7 +18,7 @@ int code_convert(char *from_charset,char *to_charset,char *inbuf,int inlen,char 
 	int rc;
 	char **pin = &inbuf;
 	char **pout = &outbuf;
- 
+
 	cd = iconv_open(to_charset,from_charset);
 	if (cd==0) return -1;
 	memset(outbuf,0,outlen);
@@ -23,11 +26,11 @@ int code_convert(char *from_charset,char *to_charset,char *inbuf,int inlen,char 
 	iconv_close(cd);
 	return 0;
 }
- 
-int u2g(char *inbuf,int inlen,char *outbuf,int outlen){ 
-	return code_convert("utf-8","gb2312",inbuf,inlen,outbuf,outlen); 
-} 
- 
+
+int u2g(char *inbuf,int inlen,char *outbuf,int outlen){
+	return code_convert("utf-8","gb2312",inbuf,inlen,outbuf,outlen);
+}
+
 /*===================================================================
 功能：总线写入
 输入：十六进制数据
@@ -36,13 +39,13 @@ int u2g(char *inbuf,int inlen,char *outbuf,int outlen){
 void bus_write(unsigned char data){
 	int t[10];
 	int f=0,i=0,d=data;
- 
+
 	//进制转换
 	for(i=0;i<8;i++){
 		t[i]=data%2;
 		data=data/2;
 	}
- 
+
 	//输出
 	digitalWrite(D1,t[0]);
 	digitalWrite(D2,t[1]);
@@ -54,9 +57,9 @@ void bus_write(unsigned char data){
 	digitalWrite(D8,t[7]);
 }
 /*===================================================================
-功能：检查LCD忙状态                                                    
+功能：检查LCD忙状态
 输入：无
-输出：lcd_busy为1时，忙，等待。lcd-busy为0时,闲，可写指令与数据。      
+输出：lcd_busy为1时，忙，等待。lcd-busy为0时,闲，可写指令与数据。
 ====================================================================*/
 void chk_busy(){//检查忙位
 	digitalWrite(LCD_RS,0);
@@ -109,7 +112,7 @@ void WriteWord_LCD12864(unsigned char a,unsigned char *d){//向LCD指定位置�
 	s=u2g_out;
 	WriteCmd_LCD12864(a);
 	while(*s>0){
-		WriteData_LCD12864(*s); 
+		WriteData_LCD12864(*s);
 		s++;
 	}
 }
@@ -125,7 +128,7 @@ void WriteWord_LCD12864_2(unsigned char *d){//向LCD发送一屏字符串,长度
 	s=u2g_out;
 	WriteCmd_LCD12864(0x80);
 	while(*s>0){
-		WriteData_LCD12864(*s); 
+		WriteData_LCD12864(*s);
 		s++;
 		i++;
 		if(i==16){
@@ -145,7 +148,6 @@ void WriteWord_LCD12864_2(unsigned char *d){//向LCD发送一屏字符串,长度
 输出：无
 ===========================================================================*/
 void Init_LCD12864(void){			//初始化LCD屏
-	wiringPiSetup();
 	pinMode(D1, OUTPUT);	//设置GPIO
 	pinMode(D2, OUTPUT);
 	pinMode(D3, OUTPUT);
@@ -154,11 +156,11 @@ void Init_LCD12864(void){			//初始化LCD屏
 	pinMode(D6, OUTPUT);
 	pinMode(D7, OUTPUT);
 	pinMode(D8, OUTPUT);
- 
+
 	pinMode(LCD_RS, OUTPUT);
 	pinMode(LCD_RW, OUTPUT);
 	pinMode(LCD_EN, OUTPUT);
- 
+
 	WriteCmd_LCD12864(0x38);       //选择8bit数据流
 	delay(20);
 	WriteCmd_LCD12864(0x01);       //清除显示，并且设定地址指针为00H
@@ -166,13 +168,17 @@ void Init_LCD12864(void){			//初始化LCD屏
 	WriteCmd_LCD12864(0x0c);       //开显示(无游标、不反白)
 	delay(20);
 }
- 
+
+void Clear_LCDScreen() {
+	WriteCmd_LCD12864(0x01);
+}
 
 /*
 int main (int args, char *argv[]){
 
+	wiringPiSetup();
 	Init_LCD12864();
- 
+
 	WriteCmd_LCD12864(0x01);
 	WriteWord_LCD12864(0x80,"Hello LCD12864");
 	if(argv[1]){
