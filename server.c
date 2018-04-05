@@ -121,7 +121,7 @@ int main(int argc, char *argv[])
             #ifdef DEBUG_INFO
             printf("send data begin\n");
             #endif
-            size = write(clnt_sock, ADC_Bytes, sizeof(ADC_Bytes));
+            size = send(clnt_sock, ADC_Bytes, sizeof(ADC_Bytes), MSG_DONTWAIT);
 	        if (size < 0) {
                 printf("send() error\n");
                 break;
@@ -137,7 +137,7 @@ int main(int argc, char *argv[])
             #ifdef DEBUG_INFO
             printf("read data begin\n");
             #endif
-            size = read(clnt_sock, buf, sizeof(buf));
+            size = recv(clnt_sock, buf, sizeof(buf), MSG_DONTWAIT);
             #ifdef DEBUG_INFO
             printf("read data done\n");
             #endif
