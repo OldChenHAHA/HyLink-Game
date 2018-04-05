@@ -90,8 +90,6 @@ int main(int argc, char *argv[])
 
     while(1){
 
-        printf("Waiting connect\n");
-
         socklen_t clnt_addr_size = sizeof(clnt_addr);
         clnt_sock = accept(serv_sock, (struct sockaddr*)&clnt_addr,
                    &clnt_addr_size);
@@ -121,7 +119,7 @@ int main(int argc, char *argv[])
             #ifdef DEBUG_INFO
             printf("send data begin\n");
             #endif
-            size = send(clnt_sock, ADC_Bytes, sizeof(ADC_Bytes), MSG_DONTWAIT);
+            size = send(clnt_sock, ADC_Bytes, sizeof(ADC_Bytes));
 	        if (size < 0) {
                 printf("send() error\n");
                 break;
@@ -132,22 +130,26 @@ int main(int argc, char *argv[])
                 #endif
             }
             
-
             memset(buf, 0, sizeof(buf));
             #ifdef DEBUG_INFO
             printf("read data begin\n");
             #endif
-            size = recv(clnt_sock, buf, sizeof(buf), MSG_DONTWAIT);
-            #ifdef DEBUG_INFO
-            printf("read data done\n");
-            #endif
-            if (size < 0) {
-                printf("read() error\n");
-                // break;
-            } else {
-                buf[size] = '\0';
+            while(1){
+                size = recv(clnt_sock, buf, sizeof(buf), MSG_DONTWAIT);
+                if ( size > 0 )
+                {
+                    break;
+                }
+                
+                
+
+                
+
             }
-	        printf("%d Receive msg from client: %s\n", size, buf);
+            
+            #ifdef DEBUG_INFO
+            printf("Receive msg from client: %s\n", buf);
+            #endif
 
         //     if ( strcmp(buf, ClientRecv) != 0)
         //     {
@@ -155,7 +157,7 @@ int main(int argc, char *argv[])
         //         break;
         //     }
 
-	        delay(5000);
+	        delay(1000);
 
         }
 
