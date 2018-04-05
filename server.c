@@ -28,11 +28,11 @@ void InitPeripherals(){
     wiringPiSetup();
     AD7606_Init();
     printf("AD7606 init done!\n");
-    /*
+    
     Init_LCD12864();
     Clear_LCDScreen();
     WriteWord_LCD12864(0x80,"Hello LCD12864 Welcome to RaspberryPi");
-    */
+    
     printf("Peripherals init done!\n");
 }
 
@@ -102,6 +102,10 @@ int main(int argc, char *argv[])
                 printf("send() error\n");
                 break;
             }
+            else{
+                printf("send data success\n");
+            }
+            
 /*
             memset(buf, 0, sizeof(buf));
             ssize_t size = read(clnt_sock, buf, sizeof(buf));
@@ -118,8 +122,8 @@ int main(int argc, char *argv[])
                 printf("transmit to client stop \n");
                 break;
             }
-	    */
-	       delay(500);
+*/
+	        delay(500);
 
         }
 
