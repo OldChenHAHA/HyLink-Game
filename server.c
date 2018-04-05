@@ -75,7 +75,7 @@ int main(int argc, char *argv[])
 
     clnt_addr_size = sizeof(clnt_addr);
 
-    const char * ClientRecv = "again";
+    const char * ClientRecv = "ok!";
     while(1){
 
         clnt_sock = accept(serv_sock, (struct sockaddr*)&clnt_addr,
@@ -91,24 +91,28 @@ int main(int argc, char *argv[])
                ntohs(clnt_addr.sin_port));
 
         while (1) {
-	    
+	   
+	    //printf("fetch data\n");	
     	    AD7606_FetchValue();
     	    write(clnt_sock, ADC_Bytes, sizeof(ADC_Bytes));
-
+	
             memset(buf, 0, sizeof(buf));
-            ssize_t size = read(clnt_sock, buf, sizeof(buf) - 1);
+            ssize_t size = read(clnt_sock, buf, sizeof(buf));
             if (size < 0) {
                 printf("read() error\n");
                 break;
             } else {
-                buf[size - 1] = '\0';
+                buf[size] = '\0';
             }
+	    //printf("%s\n",buf);
 
-            if ( strcmp(buf, ClientRecv) ~= 0)
+            if ( strcmp(buf, ClientRecv) != 0)
             {
                 printf("transmit to client stop \n");
                 break;
             }
+	    
+	    delay(500);
 
         }
 
