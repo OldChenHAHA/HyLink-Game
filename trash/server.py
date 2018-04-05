@@ -16,7 +16,7 @@ def get_host_ip():
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)  # 创建 socket 对象
 hostname = socket.gethostname()  # 获取本地主机名
-port = 12345  # 设置端口
+port = 8888  # 设置端口
 s.bind((hostname, port))  # 绑定端口
 
 print((get_host_ip(), port))
@@ -26,7 +26,8 @@ while True:
     c, addr = s.accept()  # 建立客户端连接。
     print('Connected address：%s', end='')
     print(addr)
-
+    print( c.recv(1024) )
+    
     c.send(b'Welcome to Windows !')
 
     c.close()  # 关闭连接

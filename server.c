@@ -75,6 +75,7 @@ int main(int argc, char *argv[])
 
     clnt_addr_size = sizeof(clnt_addr);
 
+    const char * ClientRecv = "again";
     while(1){
 
         clnt_sock = accept(serv_sock, (struct sockaddr*)&clnt_addr,
@@ -90,33 +91,30 @@ int main(int argc, char *argv[])
                ntohs(clnt_addr.sin_port));
 
         while (1) {
-           /* 
-	    memset(buf, 0, sizeof(buf));
+	    
+    	    AD7606_FetchValue();
+    	    write(clnt_sock, ADC_Bytes, sizeof(ADC_Bytes));
+
+            memset(buf, 0, sizeof(buf));
             ssize_t size = read(clnt_sock, buf, sizeof(buf) - 1);
- 	    buf[size-1] = '\0'; 
-            printf("%s\n",buf);
-      
-	    AD7606_FetchValue();
-	    
-	    for (int i; i<CH_NUM*2; i++){
-		buf[i] = (char)ADC_Bytes[i];
-	    }
-	    buf[17] = '\0';
+            if (size < 0) {
+                printf("read() error\n");
+                break;
+            } else {
+                buf[size - 1] = '\0';
+            }
 
-	    send(clnt_sock, buf, strlen(buf),0);
-            ssize_t size = write(clnt_sock, buf, strlen(buf));
-            printf("%s\n",buf);
-	    
+            if ( strcmp(buf, ClientRecv) ~= 0)
+            {
+                printf("transmit to client stop \n");
+                break;
+            }
 
-	    const char * b = "this is a test";
-	    */
-	    
-	    AD7606_FetchValue();
-	    write(clnt_sock, ADC_Bytes, sizeof(ADC_Bytes));
-
-	    break;
         }
 
+        printf("disconnected with ip: %s and port: %d\n",
+               inet_ntop(AF_INET, &clnt_addr.sin_addr, buf, 1024),
+               ntohs(clnt_addr.sin_port));
         close(clnt_sock);
     }
 
