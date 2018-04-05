@@ -143,7 +143,7 @@ int main(int argc, char *argv[])
             #endif
             if (size < 0) {
                 printf("read() error\n");
-                break;
+                // break;
             } else {
                 buf[size] = '\0';
             }
