@@ -22,8 +22,8 @@ int main(int argc, char const *argv[])
 
 	wiringPiSetup();
 	AD7606_Init();
+	
 	Init_LCD12864();
-
 	Clear_LCDScreen();
 	WriteWord_LCD12864(0x80,"Hello LCD12864 this is test 1");
 

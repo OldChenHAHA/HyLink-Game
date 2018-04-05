@@ -161,12 +161,14 @@ void Init_LCD12864(void){			//初始化LCD屏
 	pinMode(LCD_RW, OUTPUT);
 	pinMode(LCD_EN, OUTPUT);
 
+
 	WriteCmd_LCD12864(0x38);       //选择8bit数据流
-	delay(20);
+	delay(1);
 	WriteCmd_LCD12864(0x01);       //清除显示，并且设定地址指针为00H
-	delay(20);
+	delay(1);
 	WriteCmd_LCD12864(0x0c);       //开显示(无游标、不反白)
-	delay(20);
+	delay(1);
+	printf("LCD init done!");
 }
 
 void Clear_LCDScreen() {

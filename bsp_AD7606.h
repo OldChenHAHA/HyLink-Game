@@ -31,6 +31,8 @@
 
 #define SPI_CLK 5000000
 
+extern uint8_t ADC_Bytes[CH_NUM*2];
+
 void spiSetup();
 void AD7606_Init();
 void AD7606_SetInputRange(int _ucRange);
