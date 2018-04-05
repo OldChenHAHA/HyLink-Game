@@ -155,7 +155,7 @@ int main(int argc, char *argv[])
         //         break;
         //     }
 
-	        delay(500);
+	        delay(5000);
 
         }
 
