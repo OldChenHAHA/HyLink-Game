@@ -93,31 +93,50 @@ int main(int argc, char *argv[])
                inet_ntop(AF_INET, &clnt_addr.sin_addr, buf, 1024),
                ntohs(clnt_addr.sin_port));
 
-        while (1) {
+        // while (1) {
 	   
-	    printf("fetch data\n");	
-    	    AD7606_FetchValue();
-    	    write(clnt_sock, ADC_Bytes, sizeof(ADC_Bytes));
+	       // printf("fetch data\n");	
+    	   //  AD7606_FetchValue();
+    	   //  write(clnt_sock, ADC_Bytes, sizeof(ADC_Bytes));
 	
-            memset(buf, 0, sizeof(buf));
-            ssize_t size = read(clnt_sock, buf, sizeof(buf));
-            if (size < 0) {
-                printf("read() error\n");
-                break;
-            } else {
-                buf[size] = '\0';
-            }
-	    printf("Receive msg from client: %s\n",buf);
+        //     memset(buf, 0, sizeof(buf));
+        //     ssize_t size = read(clnt_sock, buf, sizeof(buf));
+        //     if (size < 0) {
+        //         printf("read() error\n");
+        //         break;
+        //     } else {
+        //         buf[size] = '\0';
+        //     }
+	       // printf("Receive msg from client: %s\n",buf);
 
-            if ( strcmp(buf, ClientRecv) != 0)
+        //     if ( strcmp(buf, ClientRecv) != 0)
+        //     {
+        //         printf("transmit to client stop \n");
+        //         break;
+        //     }
+	    
+	       // delay(500);
+
+        // }
+
+
+        while(1){
+            struct tcp_info info; 
+            int len=sizeof(info); 
+            getsockopt(clnt_sock, IPPROTO_TCP, TCP_INFO, &info, (socklen_t *)&len); 
+            if((info.tcpi_state==TCP_ESTABLISHED)) 
             {
-                printf("transmit to client stop \n");
+                printf("still connected\n");
+            }
+            else
+            {
                 break;
             }
-	    
-	    delay(500);
+            delay(1000);
 
         }
+
+
 
         printf("disconnected with ip: %s and port: %d\n",
                inet_ntop(AF_INET, &clnt_addr.sin_addr, buf, 1024),
