@@ -14,7 +14,7 @@
 #include "bsp_LCD12864.h"
 #include "bsp_AD7606.h"
 
-//#define ADC_VALUE_DISP
+#define ADC_VALUE_DISP
 
 int main(int argc, char const *argv[])
 {
@@ -29,17 +29,12 @@ int main(int argc, char const *argv[])
 
 	while (1) {
 		
-		printf("fuck!\n");
-		AD7606_FetchValue();
-
 #ifdef ADC_VALUE_DISP
-		for(int i = 0;i < CH_NUM; ++i){
-			printf("| %f ", adc_val_ptr[i]);
-		}
-		printf("\n");
+		printf("fetching data\n");
 #endif
 
-	delay(1);
+		AD7606_FetchValue();
+		delay(1);
 
 	}
 

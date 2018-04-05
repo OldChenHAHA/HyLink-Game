@@ -168,7 +168,7 @@ void Init_LCD12864(void){			//初始化LCD屏
 	delay(1);
 	WriteCmd_LCD12864(0x0c);       //开显示(无游标、不反白)
 	delay(1);
-	printf("LCD init done!");
+	printf("LCD init done!\n");
 }
 
 void Clear_LCDScreen() {
