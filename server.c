@@ -90,15 +90,31 @@ int main(int argc, char *argv[])
                ntohs(clnt_addr.sin_port));
 
         while (1) {
-            //memset(buf, 0, sizeof(buf));
-            //ssize_t size = read(clnt_sock, buf, sizeof(buf) - 1);
-            AD7606_FetchValue();
-            ssize_t size = write(clnt_sock, ADC_Bytes, CH_NUM*2);
-            if (size < 0) {
-                printf("write() error\n");
-                exit(1);
-            }
-            break;
+           /* 
+	    memset(buf, 0, sizeof(buf));
+            ssize_t size = read(clnt_sock, buf, sizeof(buf) - 1);
+ 	    buf[size-1] = '\0'; 
+            printf("%s\n",buf);
+      
+	    AD7606_FetchValue();
+	    
+	    for (int i; i<CH_NUM*2; i++){
+		buf[i] = (char)ADC_Bytes[i];
+	    }
+	    buf[17] = '\0';
+
+	    send(clnt_sock, buf, strlen(buf),0);
+            ssize_t size = write(clnt_sock, buf, strlen(buf));
+            printf("%s\n",buf);
+	    
+
+	    const char * b = "this is a test";
+	    */
+	    
+	    AD7606_FetchValue();
+	    write(clnt_sock, ADC_Bytes, sizeof(ADC_Bytes));
+
+	    break;
         }
 
         close(clnt_sock);

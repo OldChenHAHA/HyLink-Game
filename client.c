@@ -52,6 +52,12 @@ int main(int argc, char *argv[])
             buf[size - 1] = '\0';
         }
         write(clnt_sock, buf, strlen(buf));
+
+        memset(buf, 0, sizeof(buf));
+	size = read(clnt_sock, buf, sizeof(buf)-1);
+	buf[size-1] = '\0';
+	printf("%s\n",buf);
+	
         break;   
     }
     close(clnt_sock);
