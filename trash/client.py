@@ -8,7 +8,9 @@ host = socket.gethostname() # 获取本地主机名
 port = 8888                # 设置端口好
 
 s.connect(("10.1.1.111", port))
-print (s.recv(1024))
 
+data = s.recv(1024)
+for i in data:
+    print i
 
 s.close()  

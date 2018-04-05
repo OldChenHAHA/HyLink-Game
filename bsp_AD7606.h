@@ -29,7 +29,7 @@
 #define SPI_CHANNEL_0 0u
 #define SPI_CHANNEL_1 1u
 
-#define SPI_CLK 5000000
+#define SPI_CLK 1000000
 
 extern uint8_t ADC_Bytes[CH_NUM*2];
 extern float ADC_Values[CH_NUM];

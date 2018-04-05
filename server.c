@@ -4,16 +4,40 @@
 
 */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+
 #include <unistd.h>
 #include <arpa/inet.h>
 #include <sys/socket.h>
 
+#include "stdio.h"
+#include "stdint.h"
+#include "string.h"
+#include "stdlib.h"
+#include "unistd.h"
+#include "errno.h"
+#include "wiringPi.h"
+#include "wiringPiSPI.h"
+
+#include "bsp_LCD12864.h"
+#include "bsp_AD7606.h"
+
+
+#define ADC_VALUE_DISP
+
+void InitPeripherals(){
+    wiringPiSetup();
+    AD7606_Init();
+    Init_LCD12864();
+    Clear_LCDScreen();
+    WriteWord_LCD12864(0x80,"Hello LCD12864 Welcome to RaspberryPi");
+    printf("Peripherals init done!\n");
+}
+
 
 int main(int argc, char *argv[])
 {
+    InitPeripherals();
+
     int serv_sock, clnt_sock;
 
     struct sockaddr_in serv_addr, clnt_addr;
@@ -66,13 +90,13 @@ int main(int argc, char *argv[])
                ntohs(clnt_addr.sin_port));
 
         while (1) {
-            memset(buf, 0, sizeof(buf));
-            ssize_t size = read(clnt_sock, buf, sizeof(buf) - 1);
+            //memset(buf, 0, sizeof(buf));
+            //ssize_t size = read(clnt_sock, buf, sizeof(buf) - 1);
+
+            ssize_t size = write(clnt_sock, ADC_Bytes, CH_NUM*2);
             if (size < 0) {
-                printf("read() error\n");
-                break;
-            } else {
-                printf("client#: %s\n", buf);
+                printf("write() error\n");
+                exit(1);
             }
             break;
         }
