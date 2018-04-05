@@ -22,7 +22,7 @@
 #include "bsp_AD7606.h"
 
 
-#define ADC_VALUE_DISP
+#define DEBUG_INFO
 
 void InitPeripherals(){
     wiringPiSetup();
@@ -81,6 +81,8 @@ int main(int argc, char *argv[])
     const char * ClientRecv = "ok!";
     while(1){
 
+        printf("Waiting connect\n");
+
         clnt_sock = accept(serv_sock, (struct sockaddr*)&clnt_addr,
                    &clnt_addr_size);
         if (clnt_sock < 0) {
@@ -95,7 +97,6 @@ int main(int argc, char *argv[])
 
         while (1) {
 	   
-	        printf("fetch data\n");	
     	    AD7606_FetchValue();
     	    ssize_t size = write(clnt_sock, ADC_Bytes, sizeof(ADC_Bytes));
 	        if (size < 0) {
@@ -103,7 +104,9 @@ int main(int argc, char *argv[])
                 break;
             }
             else{
+                #ifdef DEBUG_INFO
                 printf("send data success\n");
+                #endif
             }
             
 /*
