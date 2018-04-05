@@ -84,7 +84,7 @@ int main(int argc, char *argv[])
 
 
     int flags = fcntl(serv_sock, F_GETFL, 0);
-    fcntl(serv_sock, F_SETFL, flags | 0_NONBLOCK);
+    fcntl(serv_sock, F_SETFL, flags | O_NONBLOCK);
 
     const char * ClientRecv = "ok!";
 
@@ -131,14 +131,20 @@ int main(int argc, char *argv[])
             
 
             memset(buf, 0, sizeof(buf));
+            #ifdef DEBUG_INFO
+            printf("read data begin\n");
+            #endif
             size = read(clnt_sock, buf, sizeof(buf));
+            #ifdef DEBUG_INFO
+            printf("read data done\n");
+            #endif
             if (size < 0) {
                 printf("read() error\n");
                 break;
             } else {
                 buf[size] = '\0';
             }
-	       // printf("%d Receive msg from client: %s\n", size, buf);
+	        printf("%d Receive msg from client: %s\n", size, buf);
 
         //     if ( strcmp(buf, ClientRecv) != 0)
         //     {
