@@ -33,9 +33,16 @@ void InitPeripherals(){
     
     Init_LCD12864();
     Clear_LCDScreen();
-    WriteWord_LCD12864(0x80,"Hello LCD12864 Welcome to RaspberryPi");
-    
+    //WriteWord_LCD12864(0x80,"Hello LCD12864 Welcome to RaspberryPi");
+    WriteWord_LCD12864_2("Hello LCD12864 Welcome to RaspberryPi");
     printf("Peripherals init done!\n");
+}
+
+void Disp_ADC_Value(){
+    char buf[64];
+    sprintf(buf, "ADC Channel 1 : %10.5f V", ADC_Values[0]); 
+    Clear_LCDScreen();
+    WriteWord_LCD12864_2(buf);
 }
 
 
@@ -90,6 +97,9 @@ int main(int argc, char *argv[])
 
     while(1){
 
+        AD7606_FetchValue();
+        Disp_ADC_Value();
+
         socklen_t clnt_addr_size = sizeof(clnt_addr);
         clnt_sock = accept(serv_sock, (struct sockaddr*)&clnt_addr,
                    &clnt_addr_size);
@@ -113,51 +123,62 @@ int main(int argc, char *argv[])
                ntohs(clnt_addr.sin_port));
 
         while (1) {
+
+            long recv_start_time, recv_finish_time;
+            double duration;
+
 	        ssize_t size;
     	    AD7606_FetchValue();
+            Disp_ADC_Value();
     	    
-            #ifdef DEBUG_INFO
+#ifdef DEBUG_INFO
             printf("send data begin\n");
-            #endif
+#endif
+
             size = send(clnt_sock, ADC_Bytes, sizeof(ADC_Bytes));
 	        if (size < 0) {
                 printf("send() error\n");
                 break;
             }
             else{
-                #ifdef DEBUG_INFO
+#ifdef DEBUG_INFO
                 printf("send data success\n");
-                #endif
+#endif
             }
             
             memset(buf, 0, sizeof(buf));
-            #ifdef DEBUG_INFO
+
+#ifdef DEBUG_INFO
             printf("read data begin\n");
-            #endif
+#endif
+
+            recv_start_time = clock();
             while(1){
                 size = recv(clnt_sock, buf, sizeof(buf), MSG_DONTWAIT);
                 if ( size > 0 )
                 {
+
+#ifdef DEBUG_INFO
+                    printf("Receive msg from client: %s\n", buf);
+#endif
+
                     break;
                 }
-                
-                
-
-                
+                recv_finish_time = clock();
+                duration = (double)(finirecv_start_timesh - recv_finish_time) / CLOCKS_PER_SEC; 
+                if (duration > 5)
+                    break;
 
             }
             
-            #ifdef DEBUG_INFO
-            printf("Receive msg from client: %s\n", buf);
-            #endif
+            
+            if ( strcmp(buf, ClientRecv) != 0)
+            {
+                printf("Client's msg is not 'ok!' \n");
+                break;
+            }
 
-        //     if ( strcmp(buf, ClientRecv) != 0)
-        //     {
-        //         printf("transmit to client stop \n");
-        //         break;
-        //     }
-
-	        delay(1000);
+	        delay(500);
 
         }
 
