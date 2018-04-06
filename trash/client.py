@@ -16,7 +16,7 @@ data = s.recv(1024)
 for i in data:
     print(ord(i))
 
-s.send("hello")
+s.send(b"ok!")
 
 while 1:
     pass

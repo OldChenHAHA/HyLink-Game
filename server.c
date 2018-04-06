@@ -25,25 +25,30 @@
 
 
 #define DEBUG_INFO
+#define LCD_ON
+
 
 void InitPeripherals(){
     wiringPiSetup();
     AD7606_Init();
     printf("AD7606 init done!\n");
-    
+
+#ifdef LCD_ON
     Init_LCD12864();
     Clear_LCDScreen();
     //WriteWord_LCD12864(0x80,"Hello LCD12864 Welcome to RaspberryPi");
     WriteWord_LCD12864_2("Hello LCD12864 Welcome to RaspberryPi");
+    printf("LCD init done!\n");
+#endif
     printf("Peripherals init done!\n");
 }
 
-void Disp_ADC_Value(){
+void Refresh_LCD_Disp(){
     char buf[64];
     sprintf(buf, "ADC Channel 1 : %10.5f V", ADC_Values[0]); 
     Clear_LCDScreen();
     WriteWord_LCD12864_2(buf);
-    printf("Refresh LCD\n");
+    printf("Refresh LCD!\n");
 }
 
 
@@ -99,7 +104,10 @@ int main(int argc, char *argv[])
     while(1){
 
         AD7606_FetchValue();
-        Disp_ADC_Value();
+
+#ifdef LCD_ON
+        Refresh_LCD_Disp();
+#endif
 
         socklen_t clnt_addr_size = sizeof(clnt_addr);
         clnt_sock = accept(serv_sock, (struct sockaddr*)&clnt_addr,
@@ -123,16 +131,20 @@ int main(int argc, char *argv[])
                inet_ntop(AF_INET, &clnt_addr.sin_addr, buf, 1024),
                ntohs(clnt_addr.sin_port));
 
-        while (1) {
+        while (1) 
+        {
 
             long recv_start_time, recv_finish_time;
             double duration;
-	    int disconnect_flag=0;
+	        int disconnect_flag=0;
 
 	        ssize_t size;
     	    AD7606_FetchValue();
-            Disp_ADC_Value();
-    	    
+
+#ifdef LCD_ON
+            Refresh_LCD_Disp();
+#endif
+
 #ifdef DEBUG_INFO
             printf("send data begin\n");
 #endif
@@ -155,7 +167,8 @@ int main(int argc, char *argv[])
 #endif
 
             recv_start_time = clock();
-            while(1){
+            while(1)
+            {
                 size = recv(clnt_sock, buf, sizeof(buf), MSG_DONTWAIT);
                 if ( size > 0 )
                 {
@@ -168,21 +181,17 @@ int main(int argc, char *argv[])
                 }
                 recv_finish_time = clock();
                 duration = (double)(recv_finish_time - recv_start_time) / CLOCKS_PER_SEC; 
-#ifdef DEBUG_INFO
-                //printf("duration: %f\n", duration);
-#endif          
 
-		if (duration > 5)
-		{
-		    disconnect_flag = 1;
-		    break;
-            	
-		}
-	    }
+        		if (duration > 5)
+        		{
+        		    disconnect_flag = 1;
+        		    break;
+        		}
+            }
             
-	    if (disconnect_flag == 1)
-	    {
-	        printf("Receive msg time out! \n");
+    	    if (disconnect_flag == 1)
+    	    {
+    	        printf("Receive msg time out! \n");
                 break;
             }            
 
