@@ -1,5 +1,5 @@
 # HyLink-Game
-Hylink game for testing RF signal strength
+Hylink game for testing RF signal strength in RaspberryPi platform.
 
 ## How to use
 Type "make" in terminal to compile
