@@ -43,6 +43,7 @@ void Disp_ADC_Value(){
     sprintf(buf, "ADC Channel 1 : %10.5f V", ADC_Values[0]); 
     Clear_LCDScreen();
     WriteWord_LCD12864_2(buf);
+    printf("Refresh LCD\n");
 }
 
 
@@ -107,7 +108,7 @@ int main(int argc, char *argv[])
         {
             if (errno==EAGAIN || errno == EWOULDBLOCK)
             {
-                delay(100);
+                delay(1000);
                 continue;
             }
             else
@@ -126,6 +127,7 @@ int main(int argc, char *argv[])
 
             long recv_start_time, recv_finish_time;
             double duration;
+	    int disconnect_flag=0;
 
 	        ssize_t size;
     	    AD7606_FetchValue();
@@ -135,7 +137,7 @@ int main(int argc, char *argv[])
             printf("send data begin\n");
 #endif
 
-            size = send(clnt_sock, ADC_Bytes, sizeof(ADC_Bytes));
+            size = send(clnt_sock, ADC_Bytes, sizeof(ADC_Bytes), MSG_DONTWAIT);
 	        if (size < 0) {
                 printf("send() error\n");
                 break;
@@ -165,20 +167,32 @@ int main(int argc, char *argv[])
                     break;
                 }
                 recv_finish_time = clock();
-                duration = (double)(finirecv_start_timesh - recv_finish_time) / CLOCKS_PER_SEC; 
-                if (duration > 5)
-                    break;
+                duration = (double)(recv_finish_time - recv_start_time) / CLOCKS_PER_SEC; 
+#ifdef DEBUG_INFO
+                //printf("duration: %f\n", duration);
+#endif          
 
-            }
+		if (duration > 5)
+		{
+		    disconnect_flag = 1;
+		    break;
+            	
+		}
+	    }
             
-            
+	    if (disconnect_flag == 1)
+	    {
+	        printf("Receive msg time out! \n");
+                break;
+            }            
+
             if ( strcmp(buf, ClientRecv) != 0)
             {
                 printf("Client's msg is not 'ok!' \n");
                 break;
             }
 
-	        delay(500);
+	        delay(1000);
 
         }
 
