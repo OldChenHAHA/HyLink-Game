@@ -75,34 +75,43 @@ void AD7606_CheckBusy(){
  	while( digitalRead(BUSY) == 1 );
 }
 
-//Software Poll
+// Software Poll
 void AD7606_FetchValue(){
 
 	int i = 0;
 	uint16_t temp;
+	float temp_ADC_Values[CH_NUM]={0};
+	float max_ADC_Values[CH_NUM]={0};
 
-	AD7606_CheckBusy();
-	AD7606_StartConv();
-	AD7606_CheckBusy();
+	for (i=0; i<100; i++)
+	{
+		AD7606_CheckBusy();
+		AD7606_StartConv();
+		AD7606_CheckBusy();
 
-	digitalWrite(CS, LOW);
-	if (wiringPiSPIDataRW (SPI_CHANNEL_0, ADC_Bytes, CH_NUM * 2) == -1){
-		printf("SPI failure: %s\n", strerror(errno));
-	}
-	digitalWrite(CS, HIGH);
+		digitalWrite(CS, LOW);
+		if (wiringPiSPIDataRW (SPI_CHANNEL_0, ADC_Bytes, CH_NUM * 2) == -1){
+			printf("SPI failure: %s\n", strerror(errno));
+		}
+		digitalWrite(CS, HIGH);
 
-	for(i = 0;i < CH_NUM; ++i){
+		for(i = 0;i < CH_NUM; ++i){
 
-		temp = ADC_Bytes[2 * i + 1] + (ADC_Bytes[2 * i] << 8);
-		ADC_Values[i] = 1.0 * temp * 10 / 65535;
-		if(ADC_Values[i] >= 5){
-			ADC_Values[i] = - (10 - ADC_Values[i]);
+			temp = ADC_Bytes[2 * i + 1] + (ADC_Bytes[2 * i] << 8);
+			temp_ADC_Values[i] = 1.0 * temp * 10 / 65535;
+			if(temp_ADC_Values[i] >= 5){
+				temp_ADC_Values[i] = - (10 - temp_ADC_Values[i]);
+			}
+			if ( abs(temp_ADC_Values[i]) > abs(max_ADC_Values[i]) )
+				max_ADC_Values[i] = temp_ADC_Values[i];
 		}
 	}
+	for (i = 0; i < CH_NUM; i++)
+		ADC_Values[i] = max_ADC_Values[i];
 
 	#ifdef ADC_VALUE_DISP
 	for (i=0; i< CH_NUM; i++)
-		printf("%f -", ADC_Values[i]);
+		printf("%f | ", ADC_Values[i]);
 	printf("\n");
 	#endif
 
