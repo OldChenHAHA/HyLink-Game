@@ -78,12 +78,11 @@ void AD7606_CheckBusy(){
 // Software Poll
 void AD7606_FetchValue(){
 
-	int i = 0;
+	int i = 0, j = 0;
 	uint16_t temp;
 	float temp_ADC_Values[CH_NUM]={0};
 	float max_ADC_Values[CH_NUM]={0};
-
-	for (i=0; i<100; i++)
+	for (i=0; i<20000; i++)
 	{
 		AD7606_CheckBusy();
 		AD7606_StartConv();
@@ -95,15 +94,15 @@ void AD7606_FetchValue(){
 		}
 		digitalWrite(CS, HIGH);
 
-		for(i = 0;i < CH_NUM; ++i){
+		for(j = 0;j < CH_NUM; ++j){
 
-			temp = ADC_Bytes[2 * i + 1] + (ADC_Bytes[2 * i] << 8);
-			temp_ADC_Values[i] = 1.0 * temp * 10 / 65535;
-			if(temp_ADC_Values[i] >= 5){
-				temp_ADC_Values[i] = - (10 - temp_ADC_Values[i]);
+			temp = ADC_Bytes[2 * j + 1] + (ADC_Bytes[2 * j] << 8);
+			temp_ADC_Values[j] = 1.0 * temp * 10 / 65535;
+			if(temp_ADC_Values[j] >= 5){
+				temp_ADC_Values[j] = - (10 - temp_ADC_Values[j]);
 			}
-			if ( abs(temp_ADC_Values[i]) > abs(max_ADC_Values[i]) )
-				max_ADC_Values[i] = temp_ADC_Values[i];
+			if ( abs(temp_ADC_Values[j]) > abs(max_ADC_Values[j]) )
+				max_ADC_Values[j] = temp_ADC_Values[j];
 		}
 	}
 	for (i = 0; i < CH_NUM; i++)
@@ -111,7 +110,7 @@ void AD7606_FetchValue(){
 
 	#ifdef ADC_VALUE_DISP
 	for (i=0; i< CH_NUM; i++)
-		printf("%f | ", ADC_Values[i]);
+		printf("| %f |", ADC_Values[i]);
 	printf("\n");
 	#endif
 
