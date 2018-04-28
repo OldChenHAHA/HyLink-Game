@@ -1,6 +1,7 @@
 # -*- coding: UTF-8 -*-
 # 文件名：client.py
 
+import time
 import socket               # 导入 socket 模块
 
 s = socket.socket()         # 创建 socket 对象
@@ -11,12 +12,21 @@ s.connect(("10.1.1.111", port))
 
 #s.send(b"chenzhongyao")
 
-data = s.recv(1024)
 
-for i in data:
-    print(ord(i))
+while 1:
+    data = s.recv(1024)
+    for i in data:
+        print(ord(i))
 
-s.send(b"ok!")
+    s.send(b"ok!")
+
+    data = s.recv(1024)
+
+    for i in data:
+        print(ord(i))
+
+    s.send(b"ok!")
+    time.sleep(1)
 
 while 1:
     pass

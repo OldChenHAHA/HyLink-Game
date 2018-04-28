@@ -100,4 +100,10 @@ void AD7606_FetchValue(){
 		}
 	}
 
+	#ifdef ADC_VALUE_DISP
+	for (i=0; i< CH_NUM; i++)
+		printf("%f -", ADC_Values[i]);
+	printf("\n");
+	#endif
+
 }

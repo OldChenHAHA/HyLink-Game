@@ -64,9 +64,15 @@ void bus_write(unsigned char data){
 void chk_busy(){//检查忙位
 	digitalWrite(LCD_RS,0);
 	digitalWrite(LCD_RW,1);
-	digitalWrite(LCD_EN,1);
+	digitalWrite(LCD_EN,0);
 	bus_write(0xff);
+	digitalWrite(LCD_EN,1);
 	pinMode(D8, INPUT);
+	while(1){
+		digitalWrite(LCD_EN,0);
+	}
+
+
 	while(digitalRead(D8));
 	pinMode(D8, OUTPUT);
 	digitalWrite(LCD_EN,0);

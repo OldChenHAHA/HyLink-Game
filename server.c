@@ -25,7 +25,7 @@
 
 
 #define DEBUG_INFO
-#define LCD_ON
+// #define LCD_ON
 
 
 void InitPeripherals(){
