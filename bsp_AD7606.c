@@ -82,7 +82,7 @@ void AD7606_FetchValue(){
 	uint16_t temp;
 	float temp_ADC_Values[CH_NUM]={0};
 	float max_ADC_Values[CH_NUM]={0};
-	for (i=0; i<20000; i++)
+	for (i=0; i<10000; i++)
 	{
 		AD7606_CheckBusy();
 		AD7606_StartConv();
@@ -101,8 +101,12 @@ void AD7606_FetchValue(){
 			if(temp_ADC_Values[j] >= 5){
 				temp_ADC_Values[j] = - (10 - temp_ADC_Values[j]);
 			}
-			if ( abs(temp_ADC_Values[j]) > abs(max_ADC_Values[j]) )
+			if ( temp_ADC_Values[j] > 0 && temp_ADC_Values[j] > max_ADC_Values[j] ){
 				max_ADC_Values[j] = temp_ADC_Values[j];
+			}
+			else if ( temp_ADC_Values[j] < 0 && (-temp_ADC_Values[j]) > max_ADC_Values[j] ){
+				max_ADC_Values[j] = temp_ADC_Values[j];
+			}
 		}
 	}
 	for (i = 0; i < CH_NUM; i++)
